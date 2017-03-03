@@ -1,0 +1,27 @@
+// Generated.
+
+object Strings {
+    lateinit var context: Context
+
+    private fun stringForKey(key: int, varargs args: [Object] = []): String {
+        return context.resources.getString(key, *args)
+    }
+
+    private fun stringArrayForKey(key: int): [String] {
+        return context.resources.getStringArray(key)
+    }
+{% for item in strings %}
+{%- if item.args.length > 0 %}
+    fun {{ item.key | camelcase }}({{ item.args | parameters }}): String = 
+        stringForKey(R.string.{{ item.key | fixKey }}, {{ item.args | arguments }})
+{%- else %}
+    val {{ item.key | camelcase }}: String
+        get() = stringForKey(R.string.{{ item.key | fixKey }})
+{%- endif %}
+{% endfor %}
+
+{%- for item in stringArrays %}
+    val {{ item.key | camelcase }}: String
+        get() = stringArrayForKey(R.string.{{ item.key | fixKey }})
+{% endfor -%}
+}
