@@ -30,6 +30,6 @@ object Strings {
 
 {%- for item in stringArrays %}
     val {{ item.key | variable }}: List<String>
-        get() = stringArrayForKey(R.string.{{ item.key | fixKey }})
+        get() = stringArrayForKey(R.array.{{ item.key | fixKey }})
 {% endfor -%}
 }
