@@ -1,14 +1,22 @@
 // Generated.
+package net.localift.generated
+
+import android.content.Context
+import net.localift.localift.R
 
 object Strings {
-    lateinit var context: Context
+    private lateinit var context: Context
 
-    private fun stringForKey(key: int, varargs args: [Object] = []): String {
+    fun init(context: Context) {
+      this.context = context
+    }
+
+    private fun stringForKey(key: Int, vararg args: Any): String {
         return context.resources.getString(key, *args)
     }
 
-    private fun stringArrayForKey(key: int): [String] {
-        return context.resources.getStringArray(key)
+    private fun stringArrayForKey(key: Int): List<String> {
+        return context.resources.getStringArray(key).toList()
     }
 {% for item in strings %}
 {%- if item.args.length > 0 %}
@@ -21,7 +29,7 @@ object Strings {
 {% endfor %}
 
 {%- for item in stringArrays %}
-    val {{ item.key | camelcase }}: String
+    val {{ item.key | camelcase }}: List<String>
         get() = stringArrayForKey(R.string.{{ item.key | fixKey }})
 {% endfor -%}
 }
