@@ -20,16 +20,16 @@ object Strings {
     }
 {% for item in strings %}
 {%- if item.args.length > 0 %}
-    fun {{ item.key | camelcase }}({{ item.args | parameters }}): String = 
+    fun {{ item.key | variable }}({{ item.args | parameters }}): String = 
         stringForKey(R.string.{{ item.key | fixKey }}, {{ item.args | arguments }})
 {%- else %}
-    val {{ item.key | camelcase }}: String
+    val {{ item.key | variable }}: String
         get() = stringForKey(R.string.{{ item.key | fixKey }})
 {%- endif %}
 {% endfor %}
 
 {%- for item in stringArrays %}
-    val {{ item.key | camelcase }}: List<String>
+    val {{ item.key | variable }}: List<String>
         get() = stringArrayForKey(R.string.{{ item.key | fixKey }})
 {% endfor -%}
 }
