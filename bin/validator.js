@@ -6,6 +6,7 @@ const program = require("commander")
 const fs = require("fs")
 const yaml = require("js-yaml")
 const { validate, format, write } = require("../lib")
+const path = require("path")
 const pkg = require("../package.json")
 
 program
@@ -20,13 +21,13 @@ program
     const fns = {}
 
     const baseLang = base.split(".")[0]
-    data[baseLang] = yaml.safeLoad(fs.readFileSync(base, "utf8"), { json: true })
-    fns[baseLang] = base
+    data[baseLang] = yaml.safeLoad(fs.readFileSync(path.resolve(base), "utf8"), { json: true })
+    fns[baseLang] = path.resolve(base)
 
     for (const lang of langs) {
       const key = lang.split(".")[0]
-      data[key] = yaml.safeLoad(fs.readFileSync(lang, "utf8"), { json: true })
-      fns[key] = lang
+      data[key] = yaml.safeLoad(fs.readFileSync(path.resolve(lang), "utf8"), { json: true })
+      fns[key] = path.resolve(lang)
     }
 
     validate(baseLang, data)
