@@ -9,6 +9,7 @@
   "author": "Brendan Molloy <brendan@bbqsrc.net> (https://brendan.so/)",
   "license": "ISC",
   "dependencies": {
+    "clj-fuzzy": "^0.3.3",
     "commander": "^2.9.0",
     "common-tags": "^1.3.1",
     "debug": "^2.2.0",
