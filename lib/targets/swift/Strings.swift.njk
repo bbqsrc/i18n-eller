@@ -1,0 +1,49 @@
+import Foundation
+
+class Strings {
+    static var locale: String? = nil {
+        didSet {
+            if let dir = Bundle.main.path(forResource: locale, ofType: "lproj"), let bundle = Bundle(path: dir) {
+                self.bundle = bundle
+            } else {
+                self.bundle = Bundle.main
+            }
+        }
+    }
+
+    static var bundle: Bundle = Bundle.main
+
+    fileprivate static func string(for key: String) -> String {
+        return bundle.localizedString(forKey: key, value: nil, table: nil)
+    }
+
+    fileprivate static func stringArray(for key: String, length: Int) -> [String] {
+        return (0..&lt;length).map {
+            bundle.localizedString(forKey: "\\(key)_\\($0)", value: nil, table: nil)
+        }
+    }
+{%- for item in strings %}
+    /// {{ item.comment }}
+{%- if item.args.length > 0 %}
+    static func {{ item.key | variable }}({{ item.args | parameters }}) -> String {
+        let format = string(for: "{{ item.key }}")
+        return String(format: format, {{ item.args | arguments }})
+    }
+{%- else %}
+    static var {{ item.key | variable }}: String {
+        return string(for: "{{ item.key }})
+    }
+{%- endif %}
+{% endfor %}
+
+{%- for item in stringArrays %}
+    static var {{ item.key | variable }}: [String] {
+        return stringArray(for: "{{ item.key }}", length: {{ item.args.length }})
+    }
+{% endfor %}
+
+    @availability(*, unavailable)
+    private init() {
+        fatalError("Cannot be initalised")
+    }
+}
