@@ -15,22 +15,25 @@ program
   .arguments("<base> [langs...]")
   .option("-f, --format", "Format files")
   .option("-o, --output [dir]", "Desired output path")
+  .option("-s, --fuzzy", "Fuzzy match using Sørensen-Dice coefficient")
   .action((base, langs) => {
     const data = {}
 
     const fns = {}
 
     const baseLang = base.split(".")[0]
-    data[baseLang] = yaml.safeLoad(fs.readFileSync(path.resolve(base), "utf8"), { json: true })
+    data[baseLang] = yaml.safeLoad(fs.readFileSync(path.resolve(base), "utf8"), { json: true }) || {}
     fns[baseLang] = path.resolve(base)
 
     for (const lang of langs) {
       const key = lang.split(".")[0]
-      data[key] = yaml.safeLoad(fs.readFileSync(path.resolve(lang), "utf8"), { json: true })
+      data[key] = yaml.safeLoad(fs.readFileSync(path.resolve(lang), "utf8"), { json: true }) || {}
       fns[key] = path.resolve(lang)
     }
 
-    validate(baseLang, data)
+    validate(baseLang, data, {
+        useSørensenDice: program.fuzzy
+    })
 
     if (program.format) {
         const o = {}
