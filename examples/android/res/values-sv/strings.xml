@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="first_item">Detta är en sträng.</string>
+    <string name="another_item">Jag har <xliff:g id="number" example="{number}">%1$s</xliff:g> katter.</string>
+</resources>

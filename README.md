@@ -16,6 +16,8 @@ npm i -g bbqsrc/strut-icu
 
 Generates target output (ie iOS, Android, etc) from YAML source files. Automatically handles converting ICU entities to platform-supported entities.
 
+Provides a type-safe singleton on each platform for accessing strings by key, generated from the YAML files. See `examples/` for an example for each platform.
+
 #### Supported generator platforms
 
 - objc: Objective C output
