@@ -16,11 +16,11 @@ program
     const gen = require(`${__dirname}/../lib/targets/${target}`)
     const data = {}
 
-    const baseLang = base.split(".")[0]
+    const baseLang = base.split("/").pop().split(".")[0]
     data[baseLang] = yaml.safeLoad(fs.readFileSync(base, "utf8"))
 
     for (const lang of langs) {
-      const key = lang.split(".")[0]
+      const key = lang.split("/").pop().split(".")[0]
       data[key] = yaml.safeLoad(fs.readFileSync(lang, "utf8"))
     }
 
