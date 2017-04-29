@@ -2,7 +2,7 @@
   "name": "strut-icu",
   "version": "0.2.0",
   "description": "",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,5 +19,10 @@
     "nunjucks": "^3.0.0",
     "xml2js": "^0.4.17",
     "xmlbuilder": "^8.2.2"
+  },
+  "bin": {
+    "strut-icu-generate": "./bin/strut-icu-generate",
+    "strut-icu-import": "./bin/strut-icu-import",
+    "strut-icu-validate": "./bin/strut-icu-validate"
   }
 }
