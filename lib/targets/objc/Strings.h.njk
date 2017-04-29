@@ -1,0 +1,16 @@
+@import Foundation;
+
+@interface Strings : NSObject
+
+@property (class, atomic, assign) NSString* _Nullable locale;
+@property (class, atomic, assign) NSBundle* _Nonnull bundle;
+
+{%- for item in strings %}
++(NSString* _Nonnull){{ item | typedSelector }};
+{%- endfor %}
+
+{%- for item in stringArrays %}
++(NSArray<NSString*>* _Nonnull){{ item | typedSelector }};
+{%- endfor %}
+
+@end
