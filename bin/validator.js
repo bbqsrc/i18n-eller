@@ -36,25 +36,25 @@ program
     })
 
     if (program.format) {
-        const o = {}
+      const o = {}
 
-        for (const key in data) {
-            o[key] = format(data[baseLang], data[key])
+      for (const key in data) {
+        o[key] = format(data[baseLang], data[key])
+      }
+
+      if (program.output) {
+        const ofns = {}
+
+        for (const key in o) {
+          ofns[fns[key]] = o[key]
         }
 
-        if (program.output) {
-            const ofns = {}
-
-            for (const key in o) {
-                ofns[fns[key]] = o[key]
-            }
-
-            write(program.output, ofns)
-        } else {
-            for (const key in o) {
-                fs.writeFileSync(fns[key], o[key], "utf8")
-            }
+        write(program.output, ofns)
+      } else {
+        for (const key in o) {
+          fs.writeFileSync(fns[key], o[key], "utf8")
         }
+      }
     }
   })
   .parse(process.argv)
