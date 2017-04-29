@@ -5,10 +5,11 @@
 const program = require("commander")
 const fs = require("fs")
 const yaml = require("js-yaml")
+const pkg = require("../package.json")
 const { write } = require("../lib")
 
 program
-  .version("0.2.0")
+  .version(pkg.version)
   .usage("[options] <target> <base> [langs...]")
   .arguments("<target> <base> [langs...]")
   .option("-o, --output [dir]", "Desired output path")

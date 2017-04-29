@@ -17,6 +17,7 @@
     "js-yaml": "^3.6.1",
     "lodash": "^4.15.0",
     "nunjucks": "^3.0.0",
+    "xml2js": "^0.4.17",
     "xmlbuilder": "^8.2.2"
   }
 }

@@ -1,0 +1,36 @@
+#!/usr/bin/env node
+
+"use strict"
+
+const program = require("commander")
+const fs = require("fs")
+const { getSupport, from } = require("../lib/convertors")
+const pkg = require("../package.json")
+const { validate, format, write } = require("../lib")
+
+const supported = getSupport().from
+
+program
+  .version(pkg.version)
+  .usage("[options] <format> <base> [langs...]")
+  .option("-o, --output [dir]", "Desired output path")
+  .option("-n, --normalise", "Normalise keys to camel case format")
+  .arguments("<format> <base> [langs...]")
+  .action((format, base, langs, options) => {
+    if (!supported.includes(format)) {
+      console.error(`Format ${format} not supported.`)
+      console.error(`Supported formats: ${supported.join(", ")}`)
+      return
+    }
+
+    const files = from(format, base, langs, options)
+      .then(files => {
+        write(options.output || ".", files)
+      })
+      .catch(err => console.error(err.stack))
+  })
+  .parse(process.argv)
+
+if (process.argv.length < 3) {
+  program.help()
+}

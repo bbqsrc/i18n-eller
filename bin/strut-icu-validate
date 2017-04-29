@@ -32,7 +32,7 @@ program
     }
 
     validate(baseLang, data, {
-        useSørensenDice: program.fuzzy
+      useSorensenDice: program.fuzzy
     })
 
     if (program.format) {
