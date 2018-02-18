@@ -21,12 +21,12 @@ program
 
     const fns = {}
 
-    const baseLang = base.split(".")[0]
+    const baseLang = path.basename(base).split(".")[0]
     data[baseLang] = yaml.safeLoad(fs.readFileSync(path.resolve(base), "utf8"), { json: true }) || {}
     fns[baseLang] = path.resolve(base)
 
     for (const lang of langs) {
-      const key = lang.split(".")[0]
+      const key = path.basename(lang).split(".")[0]
       data[key] = yaml.safeLoad(fs.readFileSync(path.resolve(lang), "utf8"), { json: true }) || {}
       fns[key] = path.resolve(lang)
     }

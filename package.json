@@ -15,10 +15,15 @@
     "debug": "^2.2.0",
     "intl-messageformat-parser": "^1.2.0",
     "js-yaml": "^3.6.1",
+    "jsonpath": "^0.2.11",
     "lodash": "^4.15.0",
     "nunjucks": "^3.0.0",
+    "xcode": "^0.9.3",
     "xml2js": "^0.4.17",
-    "xmlbuilder": "^8.2.2"
+    "xml2js-xpath": "^0.8.0",
+    "xmlbuilder": "^8.2.2",
+    "xmldom": "^0.1.27",
+    "xpath": "0.0.24"
   },
   "bin": {
     "strut-icu-generate": "./bin/strut-icu-generate",

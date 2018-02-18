@@ -1,0 +1,75 @@
+#!/usr/bin/env node
+
+"use strict"
+
+const program = require("commander")
+const fs = require("fs")
+const xcode = require("xcode")
+const { validate, format, write } = require("../lib")
+const path = require("path")
+const pkg = require("../package.json")
+const _ = require("lodash")
+const debug = require("debug")("init")
+
+const stringFile = (lang) => `${lang}.lproj/Localizable.strings`
+const findStringFile = (proj, lang) => _.find(proj.hash.project.objects.PBXFileReference,
+    x => x.path === stringFile(lang))
+const findVariantGroupKey = (proj) => _.findKey(proj.hash.project.objects.PBXVariantGroup,
+    (v, k) => v.name === "Localizable.strings")
+
+function createBaseStrings(proj, variantGroupKey) {
+  //proj.addSourceFile(stringFile("Base"), {}, variantGroupKey)
+}
+
+function run(projPath, langs) {
+  const fullPath = `${projPath}/project.pbxproj`
+  const proj = xcode.project(fullPath)
+  proj.parseSync()
+
+  // Check for variant group
+  let variantGroupKey = findVariantGroupKey(proj)
+  debug(variantGroupKey)
+
+  if (variantGroupKey == null) {
+    const g = proj.addLocalizationVariantGroup("Localizable.strings")
+
+    variantGroupKey = findVariantGroupKey(proj)
+    debug(variantGroupKey)
+  }
+
+  debug(findVariantGroupKey(proj))
+
+  // Check for Base.lproj/Localizable.strings
+  const baseStrings = findStringFile(proj, "Base")
+  
+  if (baseStrings == null) {
+    createBaseStrings(proj, variantGroupKey)
+  }
+
+  /*
+
+  for (const lang of langs) {
+    if (!findStringFile(proj, lang)) {
+      createStrings(proj, lang)
+    }
+  }
+  */
+
+  fs.writeFileSync(fullPath, proj.writeSync())
+}
+
+program
+  .version(pkg.version)
+  .command("xcode <project> [langs...]", "Initialises language files for Xcode projects")
+  .action(function(cmd, project, langs, options) {
+    run(project, langs)
+    console.log("LL")
+  })
+
+program.parse(process.argv)
+
+/*
+if (process.argv.length < 3) {
+  program.help()
+}
+*/
