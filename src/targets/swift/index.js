@@ -1,20 +1,50 @@
 "use strict"
 
 const yaml = require("js-yaml")
-const { ICUParser, getKeywordOrder } = require("../..")
+const { ICUParser, getKeywordOrder, resolveLocaleTree } = require("../..")
 const debug = require("debug")("swift")
 const { generateStringsFile } = require("../../support/apple")
 
 const swiftApiHeader = `// Generated. Do not edit.
 import Foundation
 
+fileprivate extension UserDefaults {
+    var appleLanguages: [String] {
+        return self.array(forKey: "AppleLanguages") as? [String] ??
+            [Locale.autoupdatingCurrent.languageCode ?? "en"]
+    }
+}
+
+fileprivate func derivedLocales(_ languageCode: String) -> [String] {
+  let x = Locale(identifier: languageCode)
+  var opts: [String] = []
+  
+  if let lang = x.languageCode {
+      if let script = x.scriptCode, let region = x.regionCode {
+          opts.append("\\(lang)-\\(script)-\\(region)")
+      }
+      
+      if let script = x.scriptCode {
+          opts.append("\\(lang)-\\(script)")
+      }
+      
+      if let region = x.regionCode {
+          opts.append("\\(lang)-\\(region)")
+      }
+      
+      opts.append(lang)
+  }
+  
+  return opts
+}
+
 class Strings {
-    static var languageCode: String? = nil {
+    static var languageCode: String = UserDefaults.standard.appleLanguages[0] {
         didSet {
             if let dir = Bundle.main.path(forResource: languageCode, ofType: "lproj"), let bundle = Bundle(path: dir) {
                 self.bundle = bundle
             } else {
-                print("No bundle found for \(languageCode ?? nil)")
+                print("No bundle found for \\(languageCode))")
                 self.bundle = Bundle.main
             }
         }
@@ -22,11 +52,11 @@ class Strings {
 
     static var bundle: Bundle = Bundle.main
 
-    fileprivate static func string(for key: String) -> String {
+    internal static func string(for key: String) -> String {
         return bundle.localizedString(forKey: key, value: nil, table: nil)
     }
 
-    fileprivate static func stringArray(for key: String, length: Int) -> [String] {
+    internal static func stringArray(for key: String, length: Int) -> [String] {
         return (0..<length).map {
             bundle.localizedString(forKey: "\\(key)_\\($0)", value: nil, table: nil)
         }
@@ -81,7 +111,7 @@ function swiftApiStringArrayFuncGenerator(input, key) {
 }
 
 
-function swiftApiGenerator(baseData) {
+function swiftApiGenerator(baseData, langs) {
   const o = [swiftApiHeader]
 
   for (const k in baseData) {
@@ -97,6 +127,13 @@ function swiftApiGenerator(baseData) {
 
   o.push(swiftApiFooter)
 
+  o.push(`\nfileprivate let localeTree = [\n    `)
+  o.push(langs
+    .filter(x => x !== "base")
+    .map(lang => `"${lang}": ${JSON.stringify(resolveLocaleTree(lang))}`)
+    .join(",\n    "))
+  o.push("\n]\n")
+
   return o.join("")
 }
 
@@ -106,14 +143,13 @@ function generate(baseLang, data, outputDir) {
 
   for (const lang in data) {
     const key = baseLang === lang ? "Base" : lang
-    console.log(lang)
-    o[`${key}.lproj/Localizable.strings`] = generateStringsFile(baseData, data[lang])
+    o[`${key}.lproj/Localizable.strings`] = generateStringsFile(baseData, data[lang] || {})
   }
 
-  o["Strings.swift"] = swiftApiGenerator(baseData)
+  o["Strings.swift"] = swiftApiGenerator(baseData, Object.keys(data))
 
-  console.log(Object.keys(o))
-  return o
+  // console.log(Object.keys(o))
+  return Promise.resolve(o)
 }
 
 module.exports = generate

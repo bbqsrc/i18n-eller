@@ -1,6 +1,8 @@
 "use strict"
 
 const parser = require('intl-messageformat-parser')
+const IntlMessageFormat = require("intl-messageformat")
+require("intl")
 const debug = require("debug")("strut-icu")
 const fs = require("fs")
 const path = require("path")
@@ -10,6 +12,34 @@ const yaml = require("js-yaml")
 const fuzzy = require("clj-fuzzy")
 
 const indentString = (str, count, indent) => str.replace(/^/mg, indent.repeat(count));
+
+function resolveLocaleTree(locale) {
+  const localeData = IntlMessageFormat.__localeData__
+  const resolveLocale = IntlMessageFormat.prototype._resolveLocale
+
+  const topLocale = resolveLocale(locale).toLowerCase()
+
+  if (topLocale === IntlMessageFormat.defaultLocale) {
+    return [locale]
+  }
+
+  const o = [locale]
+  let curLocale = localeData[topLocale]
+
+  for (;;) {
+    if (!o.includes(curLocale.locale)) {
+      o.push(curLocale.locale)
+    }
+
+    if (!curLocale.parentLocale) {
+      break
+    }
+
+    curLocale = localeData[curLocale.parentLocale.toLowerCase()]
+  }
+
+  return o
+}
 
 function mkdirSync(dirpath) {
   try {
@@ -139,7 +169,13 @@ class ICUParser {
   parse(input) {
     debug(input)
     this.reset()
-    this.ast = parser.parse(input)
+    
+    try {
+      this.ast = parser.parse(input)
+    } catch (err) {
+      console.error("Error parsing input: " + input)
+      throw err
+    }
 
     if (this.ast.type !== "messageFormatPattern") {
       return this.o
@@ -258,7 +294,6 @@ function validate(baseKey, data, options = {}) {
   const baseLang = data[baseKey]
 
   // Get count of base lang
-
   console.log(`== ${baseKey} ==`)
   console.log(`Base language contains: ${Object.keys(baseLang).length} keys\n`)
 
@@ -312,15 +347,16 @@ function format(baseLang, lang) {
 
   const out = []
 
-  for (const key of allKeys) {
-    const dump = { [key]: lang[key] }
+  for (let key of allKeys) {
+    const cleanKey = _.camelCase(key)
+    const dump = { [cleanKey]: lang[key] }
 
     if (baseLangKeys.includes(key) && langKeys.includes(key)) {
       out.push(indentString(`Original: ${baseLang[key]}`, 1, "# "))
       out.push(yaml.safeDump(dump))
     } else if (baseLangKeys.includes(key)) {
       out.push(indentString(`Original: ${baseLang[key]}`, 1, "# "))
-      out.push(`#${key}: UNTRANSLATED\n`)
+      out.push(`#${cleanKey}: UNTRANSLATED\n`)
     } else if (langKeys.includes(key)) {
       out.push(`# ORIGINAL DOES NOT EXIST`)
       out.push(yaml.safeDump(dump))
@@ -336,5 +372,6 @@ module.exports = {
   nunjucksEnvironmentWith,
   validate,
   format,
-  write
+  write,
+  resolveLocaleTree
 }

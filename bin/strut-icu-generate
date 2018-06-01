@@ -25,8 +25,13 @@ program
       data[key] = yaml.safeLoad(fs.readFileSync(lang, "utf8"))
     }
 
-    const out = gen(baseLang, data, program.output || ".")
-    write(program.output || ".", out)
+    gen(baseLang, data, program.output || ".").then(out => {
+      write(program.output || ".", out)
+    }).catch(err => {
+      console.error(err.stack)
+      process.exit(1)
+    })
+    
   })
   .parse(process.argv)
 

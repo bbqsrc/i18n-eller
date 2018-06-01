@@ -82,7 +82,7 @@ function generate(baseLang, data, outputDir) {
   o["Strings.m"] = stringsMTmpl.render(ast)
   o["Strings.h"] = stringsHTmpl.render(ast)
   
-  return o
+  return Promise.resolve(o)
 }
 
 module.exports = generate

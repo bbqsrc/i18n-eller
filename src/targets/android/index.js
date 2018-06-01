@@ -164,7 +164,7 @@ function generate(baseLang, data, outputDir) {
 
   o["Strings.kt"] = stringsKtTmpl.render(ast)
 
-  return o
+  return Promise.resolve(o)
 }
 
 module.exports = generate

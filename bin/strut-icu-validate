@@ -27,7 +27,12 @@ program
 
     for (const lang of langs) {
       const key = path.basename(lang).split(".")[0]
-      data[key] = yaml.safeLoad(fs.readFileSync(path.resolve(lang), "utf8"), { json: true }) || {}
+      try {
+        data[key] = yaml.safeLoad(fs.readFileSync(path.resolve(lang), "utf8"), { json: true }) || {}
+      } catch (err) {
+        console.error(`Error while processing: ${path.resolve(lang)}`)
+        throw err
+      }
       fns[key] = path.resolve(lang)
     }
 
