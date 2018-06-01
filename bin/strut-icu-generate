@@ -14,7 +14,7 @@ program
   .arguments("<target> <base> [langs...]")
   .option("-o, --output [dir]", "Desired output path")
   .action((target, base, langs) => {
-    const gen = require(`${__dirname}/../lib/targets/${target}`)
+    const gen = require(`${__dirname}/../src/targets/${target}`)
     const data = {}
 
     const baseLang = base.split("/").pop().split(".")[0]
