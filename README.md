@@ -36,6 +36,10 @@ Validates and formats the YAML files. Detects perfect duplicates, and supports u
 
 Imports content from other formats into the YAML format used by `i18n-eller`.
 
+#### Supporting import formats
+
+- xliff: XLIFF translation interchange format
+
 ### i18n-eller-init
 
 Initialise localisation support for more annoying project formats.
@@ -43,10 +47,6 @@ Initialise localisation support for more annoying project formats.
 #### Supporting project formats
 
 - xcode: does all the work to create `Localizable.strings` stubs for chosen languages and adds to build system
-
-#### Supporting import formats
-
-- xliff: XLIFF translation interchange format
 
 ## License
 
