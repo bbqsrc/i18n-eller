@@ -14,9 +14,11 @@ The tools are not yet on npm, so in the mean time, you can install from github:
 npm i -g bbqsrc/i18n-eller
 ```
 
-## Tools
+## Commands
 
-### i18n-eller-generate
+Call `i18n-eller` with one of the following commands. (Use `--help` for more information.)
+
+### generate
 
 Generates target output (ie iOS, Android, etc) from YAML source files. Automatically handles converting ICU entities to platform-supported entities.
 
@@ -28,11 +30,7 @@ Provides a type-safe singleton on each platform for accessing strings by key, ge
 - swift: Swift output
 - android: Android String XML output
 
-### i18n-eller-validate
-
-Validates and formats the YAML files. Detects perfect duplicates, and supports using fuzzy matching to find strings that are similar and likely duplicates.
-
-### i18n-eller-import
+### import
 
 Imports content from other formats into the YAML format used by `i18n-eller`.
 
@@ -40,13 +38,17 @@ Imports content from other formats into the YAML format used by `i18n-eller`.
 
 - xliff: XLIFF translation interchange format
 
-### i18n-eller-init
+### init
 
 Initialise localisation support for more annoying project formats.
 
 #### Supporting project formats
 
 - xcode: does all the work to create `Localizable.strings` stubs for chosen languages and adds to build system
+
+### validate
+
+Validates and formats the YAML files. Detects perfect duplicates, and supports using fuzzy matching to find strings that are similar and likely duplicates.
 
 ## License
 

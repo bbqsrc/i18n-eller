@@ -1,12 +1,6 @@
-#!/usr/bin/env node
-
-"use strict"
-
-const program = require("commander")
 const fs = require("fs")
 const xcode = require("xcode")
 const path = require("path")
-const pkg = require("../package.json")
 
 const stringFile = (lang) => `${lang}.lproj/Localizable.strings`
 const getFirstProjectSection = (proj) => proj.pbxProjectSection()[proj.getFirstProject().uuid]
@@ -28,23 +22,23 @@ const createStringsVariantGroup = (proj, subgroupId) => {
   proj.addToPbxResourcesBuildPhase(vgroup)
 }
 
-const pbxVariantGroupKeyByName = function(proj, name) {
-  var groups = proj.hash.project.objects['PBXVariantGroup'],
-      key, groupKey;
+function pbxVariantGroupKeyByName(proj, name) {
+  const groups = proj.hash.project.objects["PBXVariantGroup"]
 
-  for (key in groups) {
-      if (!/_comment$/.test(key)) continue;
+  for (const key in groups) {
+    if (!/_comment$/.test(key)) {
+      continue
+    }
 
-      if (groups[key] == name) {
-          groupKey = key.split(/_comment$/)[0];
-          return groupKey;
-      }
+    if (groups[key] === name) {
+      return key.split(/_comment$/)[0]
+    }
   }
 
-  return null;
+  return null
 }
 
-function run(projPath, langs) {
+function init(projPath, langs) {
   const fullPath = `${projPath}/project.pbxproj`
   const proj = xcode.project(fullPath)
   proj.parseSync()
@@ -84,19 +78,4 @@ function run(projPath, langs) {
   fs.writeFileSync(fullPath, proj.writeSync())
 }
 
-program
-  .version(pkg.version)
-  .command("xcode <project> [langs...]", "Initialises language files for Xcode projects")
-  .action(function(cmd, project, ...langs) {
-    langs.pop()
-    run(project, langs)
-    process.exit(0)
-  })
-
-program.parse(process.argv)
-
-/*
-if (process.argv.length < 3) {
-  program.help()
-}
-*/
+module.exports = init
