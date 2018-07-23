@@ -1,3 +1,7 @@
+<p align="center">
+  <img width="256" height="256" src="https://user-images.githubusercontent.com/279099/43086531-de0e9012-8e9d-11e8-8674-b419b69ca922.png" alt="i18n-eller logo"/>
+</p>
+
 # i18n-eller
 
 Localisation tooling that is awesome and easy to use, using ICU formatting for plurals and other nightmarish aspects of localisation.
@@ -31,6 +35,14 @@ Validates and formats the YAML files. Detects perfect duplicates, and supports u
 ### i18n-eller-import
 
 Imports content from other formats into the YAML format used by `i18n-eller`.
+
+### i18n-eller-init
+
+Initialise localisation support for more annoying project formats.
+
+#### Supporting project formats
+
+- xcode: does all the work to create `Localizable.strings` stubs for chosen languages and adds to build system
 
 #### Supporting import formats
 
