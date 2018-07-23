@@ -1,12 +1,12 @@
 {
-  "name": "strut-icu",
-  "version": "0.2.0",
-  "description": "",
+  "name": "i18n-eller",
+  "version": "0.3.0",
+  "description": "An internationalisation suite for managing translations and projects.",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Brendan Molloy <brendan@bbqsrc.net> (https://brendan.so/)",
+  "author": "Brendan Molloy <brendan@bbqsrc.net>",
   "license": "ISC",
   "dependencies": {
     "clj-fuzzy": "^0.3.3",
@@ -28,8 +28,8 @@
     "xpath": "0.0.24"
   },
   "bin": {
-    "strut-icu-generate": "./bin/strut-icu-generate",
-    "strut-icu-import": "./bin/strut-icu-import",
-    "strut-icu-validate": "./bin/strut-icu-validate"
+    "i18n-eller-generate": "./bin/i18n-eller-generate",
+    "i18n-eller-import": "./bin/i18n-eller-import",
+    "i18n-eller-validate": "./bin/i18n-eller-validate"
   }
 }

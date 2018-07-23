@@ -4,7 +4,7 @@ const { ICUParser, getKeywordOrder, nunjucksEnvironmentWith } = require("../..")
 const yaml = require("js-yaml")
 const xmlbuilder = require("xmlbuilder")
 const _ = require("lodash")
-const debug = require("debug")("strut-icu:android")
+const debug = require("debug")("i18n-eller:android")
 
 const keywords = [
   "package",

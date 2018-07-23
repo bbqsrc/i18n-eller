@@ -3,7 +3,7 @@
 const parser = require('intl-messageformat-parser')
 const IntlMessageFormat = require("intl-messageformat")
 require("intl")
-const debug = require("debug")("strut-icu")
+const debug = require("debug")("i18n-eller")
 const fs = require("fs")
 const path = require("path")
 const _ = require("lodash")
