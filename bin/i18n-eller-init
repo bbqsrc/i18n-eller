@@ -5,20 +5,43 @@
 const program = require("commander")
 const fs = require("fs")
 const xcode = require("xcode")
-const { validate, format, write } = require("../lib")
 const path = require("path")
 const pkg = require("../package.json")
-const _ = require("lodash")
-const debug = require("debug")("init")
 
 const stringFile = (lang) => `${lang}.lproj/Localizable.strings`
-const findStringFile = (proj, lang) => _.find(proj.hash.project.objects.PBXFileReference,
-    x => x.path === stringFile(lang))
-const findVariantGroupKey = (proj) => _.findKey(proj.hash.project.objects.PBXVariantGroup,
-    (v, k) => v.name === "Localizable.strings")
+const getFirstProjectSection = (proj) => proj.pbxProjectSection()[proj.getFirstProject().uuid]
+const getMainGroup = (proj) => {
+  const mainGroupUuid = getFirstProjectSection(proj).mainGroup
+  return proj.getPBXGroupByKey(mainGroupUuid)
+}
+const createStringsVariantGroup = (proj, subgroupId) => {
+  const tmpGroupKey = proj.pbxCreateVariantGroup("Localizable.strings")
+  proj.addToPbxGroup(tmpGroupKey, subgroupId)
 
-function createBaseStrings(proj, variantGroupKey) {
-  //proj.addSourceFile(stringFile("Base"), {}, variantGroupKey)
+  const vgroup = {
+    uuid: proj.generateUuid(),
+    fileRef: tmpGroupKey,
+    basename: "Localizable.strings"
+  }
+
+  proj.addToPbxBuildFileSection(vgroup)
+  proj.addToPbxResourcesBuildPhase(vgroup)
+}
+
+const pbxVariantGroupKeyByName = function(proj, name) {
+  var groups = proj.hash.project.objects['PBXVariantGroup'],
+      key, groupKey;
+
+  for (key in groups) {
+      if (!/_comment$/.test(key)) continue;
+
+      if (groups[key] == name) {
+          groupKey = key.split(/_comment$/)[0];
+          return groupKey;
+      }
+  }
+
+  return null;
 }
 
 function run(projPath, langs) {
@@ -26,44 +49,48 @@ function run(projPath, langs) {
   const proj = xcode.project(fullPath)
   proj.parseSync()
 
-  // Check for variant group
-  let variantGroupKey = findVariantGroupKey(proj)
-  debug(variantGroupKey)
-
-  if (variantGroupKey == null) {
-    const g = proj.addLocalizationVariantGroup("Localizable.strings")
-
-    variantGroupKey = findVariantGroupKey(proj)
-    debug(variantGroupKey)
+  if (pbxVariantGroupKeyByName(proj, "Localizable.strings") != null) {
+    console.log("Localizable.strings found; aborting.")
+    process.exit(1)
   }
 
-  debug(findVariantGroupKey(proj))
+  const mainGroup = getMainGroup(proj)
+  const firstSubgroupUuid = mainGroup.children[0].value
+  const subgroupPath = JSON.parse(proj.getPBXGroupByKey(firstSubgroupUuid).path)
+  const srcPath = path.resolve(projPath, "..", subgroupPath)
 
-  // Check for Base.lproj/Localizable.strings
-  const baseStrings = findStringFile(proj, "Base")
+  // Create the strings variant group
+  createStringsVariantGroup(proj, firstSubgroupUuid)
+
+  // Get the group key because node-xcode is buggy as hell
+  const groupKey = pbxVariantGroupKeyByName(proj, "Localizable.strings")
   
-  if (baseStrings == null) {
-    createBaseStrings(proj, variantGroupKey)
-  }
-
-  /*
-
+  // Add known regions
   for (const lang of langs) {
-    if (!findStringFile(proj, lang)) {
-      createStrings(proj, lang)
-    }
-  }
-  */
+    proj.addKnownRegion(lang)
 
+    // Create empty strings file
+    const fn = stringFile(lang)
+    try {
+      fs.mkdirSync(path.join(srcPath, `${lang}.lproj`))
+    } catch (_) {}
+    fs.writeFileSync(path.join(srcPath, fn), "")
+
+    console.log("Adding file " + fn)
+    const file = proj.addFile(fn, groupKey)
+  }
+
+  console.log("Writing project...")
   fs.writeFileSync(fullPath, proj.writeSync())
 }
 
 program
   .version(pkg.version)
   .command("xcode <project> [langs...]", "Initialises language files for Xcode projects")
-  .action(function(cmd, project, langs, options) {
+  .action(function(cmd, project, ...langs) {
+    langs.pop()
     run(project, langs)
-    console.log("LL")
+    process.exit(0)
   })
 
 program.parse(process.argv)
