@@ -28,7 +28,7 @@ async function generate(target, base, langs, options) {
 }
 
 async function convert(format, base, langs, options) {
-  if (!getSupported().from.includes(format)) {
+  if (!getSupport().from.includes(format)) {
     console.error(`Format ${format} not supported.`)
     console.error(`Supported formats: ${supported.join(", ")}`)
     return

@@ -188,11 +188,12 @@ class ICUParser {
 }
 
 function write(directory, obj) {
+  console.log(arguments)
   for (const fn in obj) {
-    const p = path.join(directory, path.dirname(fn))
+    const p = path.resolve(path.dirname(fn))
     mkdirpSync(p)
 
-    fs.writeFileSync(path.join(directory, fn), obj[fn], "utf8")
+    fs.writeFileSync(fn, obj[fn], "utf8")
   }
 }
 
