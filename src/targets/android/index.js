@@ -74,6 +74,7 @@ function cleanString(str) {
   return str
     .replace(/\n/g, "\\n")
     .replace(/(['"])/g, "\\$1")
+    .replace(/&/g, "&amp;")
 }
 
 const xliffG = (id, order) => `<xliff:g id="${id}" example="{${id}}">%${order}$s</xliff:g>`
