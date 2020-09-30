@@ -1,7 +1,7 @@
 "use strict"
 
 const yaml = require("js-yaml")
-const { ICUParser, getKeywordOrder, resolveLocaleTree } = require("../..")
+const { getKeywordOrder, resolveLocaleTree } = require("../..")
 const debug = require("debug")("swift")
 const { generateStringsFile } = require("../../support/apple")
 

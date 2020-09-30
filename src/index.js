@@ -43,33 +43,11 @@ function resolveLocaleTree(locale) {
 
 function mkdirSync(dirpath) {
   try {
-    fs.mkdirSync(dirpath)
+    fs.mkdirSync(dirpath, { recursive: true })
   } catch (e) {
     if (e.code !== "EEXIST") {
       throw e
     }
-  }
-}
-
-function mkdirpSync(dirpath) {
-  const parts = dirpath.split(path.sep)
-
-  for (let i = 1; i <= parts.length; ++i) {
-    mkdirSync(path.join.apply(null, parts.slice(0, i)))
-  }
-}
-
-class StringsProcessor {
-  constructor(outputPath) {
-    this.outputPath = outputPath
-  }
-
-  process(inputFile) {
-
-  }
-
-  outputForLanguage(langCode) {
-
   }
 }
 
@@ -188,12 +166,11 @@ class ICUParser {
 }
 
 function write(directory, obj) {
-  console.log(arguments)
   for (const fn in obj) {
-    const p = path.resolve(path.dirname(fn))
-    mkdirpSync(p)
+    const p = path.resolve(directory, path.dirname(fn))
+    mkdirSync(p)
 
-    fs.writeFileSync(fn, obj[fn], "utf8")
+    fs.writeFileSync(path.join(p, path.basename(fn)), obj[fn], "utf8")
   }
 }
 
@@ -343,8 +320,8 @@ function format(baseLang, lang) {
   langKeys.sort()
   allKeys.sort()
 
-  const onlyBaseLang = _.difference(baseLangKeys, langKeys)
-  const onlyLang = _.difference(langKeys, baseLangKeys)
+  // const onlyBaseLang = _.difference(baseLangKeys, langKeys)
+  // const onlyLang = _.difference(langKeys, baseLangKeys)
 
   const out = []
 
