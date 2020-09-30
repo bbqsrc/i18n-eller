@@ -59,20 +59,6 @@ function mkdirpSync(dirpath) {
   }
 }
 
-class StringsProcessor {
-  constructor(outputPath) {
-    this.outputPath = outputPath
-  }
-
-  process(inputFile) {
-
-  }
-
-  outputForLanguage(langCode) {
-
-  }
-}
-
 class ICUParser {
   constructor() {
     this.reset()
@@ -343,8 +329,8 @@ function format(baseLang, lang) {
   langKeys.sort()
   allKeys.sort()
 
-  const onlyBaseLang = _.difference(baseLangKeys, langKeys)
-  const onlyLang = _.difference(langKeys, baseLangKeys)
+  // const onlyBaseLang = _.difference(baseLangKeys, langKeys)
+  // const onlyLang = _.difference(langKeys, baseLangKeys)
 
   const out = []
 

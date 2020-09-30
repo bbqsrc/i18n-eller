@@ -3,7 +3,7 @@
 const yargs = require("yargs")
 const cli = require("./cli")
 
-const args = yargs
+yargs
   .command("generate <target> <base> [langs..]", "Generate target-specific string handlers.", (yargs) => {
     yargs
       .positional("target", {

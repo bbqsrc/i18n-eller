@@ -18,9 +18,12 @@ async function generate(target, base, langs, options) {
     data[key] = yaml.safeLoad(fs.readFileSync(lang, "utf8"))
   }
 
+  const output = path.resolve(process.cwd(), options.output || ".")
+  console.log(`Output path: ${output}`)
+
   try {
-    const out = await gen(baseLang, data, options.output || ".")
-    write(options.output || ".", out)
+    const out = await gen(baseLang, data, output)
+    write(output, out)
   } catch(err) {
     console.error(err.stack)
     process.exit(1)
