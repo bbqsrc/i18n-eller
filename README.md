@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="256" height="256" src="https://user-images.githubusercontent.com/279099/43086531-de0e9012-8e9d-11e8-8674-b419b69ca922.png" alt="i18n-eller logo"/>
+  <img width="256" height="256" src="https://user-images.githubusercontent.com/279099/109993188-512e4b00-7d0c-11eb-8254-e4ce20a74e08.png" alt="i18n-eller logo"/>
 </p>
 
 # i18n-eller
